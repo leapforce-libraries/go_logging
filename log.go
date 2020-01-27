@@ -72,11 +72,17 @@ func (l *Logging) AddLog(log Log, testMode bool) {
 
 // GetMaxTimestamp return max value of timestamp field for certain operation
 //
-func (l *Logging) GetMaxTimestamp(operation string) (time.Time, error) {
+func (l *Logging) GetMaxTimestamp(operation string, filter string) (time.Time, error) {
 	sqlSelect := "MAX(Timestamp)"
 	sqlWhere := ""
 	if operation != "" {
 		sqlWhere = fmt.Sprintf("Operation = '%s'", operation)
+	}
+	if filter != "" {
+		if sqlWhere != "" {
+			sqlWhere += " AND "
+		}
+		sqlWhere += filter
 	}
 
 	t, err := l.BigQuery.GetValue(l.BigQueryDataset, l.BigQueryTablename, sqlSelect, sqlWhere)
@@ -88,6 +94,8 @@ func (l *Logging) GetMaxTimestamp(operation string) (time.Time, error) {
 	if t == "" {
 		t = "1800-01-01 00:00:00"
 	}
+
+	fmt.Println(t)
 
 	layout := "2006-01-02 15:04:05"
 	time1, err := time.Parse(layout, t[0:len(layout)])
