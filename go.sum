@@ -26,6 +26,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/Leapforce-nl/go_bigquerytools v0.0.0-20200126220557-9ac05f91ed5f h1:Rzl1sx0+nK2f/OhoSTz+2ENqUbwS//fes2MeSucn4/U=
 github.com/Leapforce-nl/go_bigquerytools v0.0.0-20200126220557-9ac05f91ed5f/go.mod h1:rYy5jjJLl8UjQN6QbOwgxwA/6RxsiPOLEtPU03QLlF0=
+github.com/Leapforce-nl/go_bigquerytools v0.0.0-20200127200402-570ef581c704 h1:RDH0IoI/6/q74HrBbQS5M7GRsHYWKWgwyfrIMWl+C4I=
+github.com/Leapforce-nl/go_bigquerytools v0.0.0-20200127200402-570ef581c704/go.mod h1:rYy5jjJLl8UjQN6QbOwgxwA/6RxsiPOLEtPU03QLlF0=
 github.com/Leapforce-nl/go_types v0.0.0-20200126202922-ba4900de15b8 h1:q0/mdn+TnZqBB439lOeuLPHPnQaVYCQL2B4BRLbCbuQ=
 github.com/Leapforce-nl/go_types v0.0.0-20200126202922-ba4900de15b8/go.mod h1:AuUJ0pyk3Xc6IgEuzCr5NvEl277YQwiIgJ12/SfmByI=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
