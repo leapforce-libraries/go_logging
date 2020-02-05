@@ -27,6 +27,7 @@ type Log struct {
 	OldValues string
 	NewValues string
 	KvK       string
+	NameExact string
 }
 
 func (l *Logging) ToBigQuery() error {
