@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	bigquerytools "github.com/Leapforce-nl/go_bigquerytools"
+	bigquerytools "github.com/leapforce-libraries/go_bigquerytools"
 )
 
 // Logging
