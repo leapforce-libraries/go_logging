@@ -5,6 +5,7 @@ import (
 	"time"
 
 	bigquerytools "github.com/leapforce-libraries/go_bigquerytools"
+	errortools "github.com/leapforce-libraries/go_errortools"
 )
 
 // Logging
@@ -30,7 +31,7 @@ type Log struct {
 	NameExact string
 }
 
-func (l *Logging) ToBigQuery() error {
+func (l *Logging) ToBigQuery() *errortools.Error {
 	client, errClient := l.BigQuery.CreateClient()
 	if errClient != nil {
 		return errClient
@@ -74,7 +75,7 @@ func (l *Logging) AddLog(log Log, testMode bool) {
 
 // GetMaxTimestamp return max value of timestamp field for certain operation
 //
-func (l *Logging) GetMaxTimestamp(operation string, filter string) (time.Time, error) {
+func (l *Logging) GetMaxTimestamp(operation string, filter string) (time.Time, *errortools.Error) {
 	sqlSelect := "MAX(Timestamp)"
 	sqlWhere := ""
 	if operation != "" {
@@ -87,9 +88,9 @@ func (l *Logging) GetMaxTimestamp(operation string, filter string) (time.Time, e
 		sqlWhere += filter
 	}
 
-	t, err := l.BigQuery.GetValue(l.BigQueryDataset, l.BigQueryTablename, sqlSelect, sqlWhere)
-	if err != nil {
-		return time.Now(), err
+	t, e := l.BigQuery.GetValue(l.BigQueryDataset, l.BigQueryTablename, sqlSelect, sqlWhere)
+	if e != nil {
+		return time.Now(), e
 	}
 
 	// if no error but no time found in table
@@ -97,14 +98,11 @@ func (l *Logging) GetMaxTimestamp(operation string, filter string) (time.Time, e
 		t = "1800-01-01 00:00:00"
 	}
 
-	fmt.Println(t)
-
 	layout := "2006-01-02 15:04:05"
 	time1, err := time.Parse(layout, t[0:len(layout)])
 	if err != nil {
-		return time.Now(), err
+		return time.Now(), errortools.ErrorMessage(err)
 	}
 
-	return time1, err
-
+	return time1, nil
 }
