@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"time"
 
-	bigquerytools "github.com/leapforce-libraries/go_bigquerytools"
 	errortools "github.com/leapforce-libraries/go_errortools"
+	google "github.com/leapforce-libraries/go_google"
 )
 
 // Logging
 //
 type Logging struct {
-	BigQuery          *bigquerytools.BigQuery
+	BigQuery          *google.BigQuery
 	BigQueryDataset   string
 	BigQueryTablename string
 	Logs              []Log
