@@ -5,13 +5,13 @@ import (
 	"time"
 
 	errortools "github.com/leapforce-libraries/go_errortools"
-	google "github.com/leapforce-libraries/go_google"
+	bigquery "github.com/leapforce-libraries/go_google/bigquery"
 )
 
 // Logging
 //
 type Logging struct {
-	BigQuery          *google.BigQuery
+	BigQueryService   *bigquery.Service
 	BigQueryDataset   string
 	BigQueryTablename string
 	Logs              []Log
@@ -32,7 +32,7 @@ type Log struct {
 }
 
 func (l *Logging) ToBigQuery() *errortools.Error {
-	client, errClient := l.BigQuery.CreateClient()
+	client, errClient := l.BigQueryService.CreateClient()
 	if errClient != nil {
 		return errClient
 	}
@@ -40,13 +40,13 @@ func (l *Logging) ToBigQuery() *errortools.Error {
 	//guid := types.NewGUID()
 	//tempTableName := "temp_" + strings.Replace(guid.String(), "-", "", -1)
 
-	//table, errTable := l.BigQuery.CreateTable(client, l.BigQueryDataset, tempTableName, Log{}, false)
+	//table, errTable := l.BigQueryService.CreateTable(client, l.BigQueryDataset, tempTableName, Log{}, false)
 	//if errTable != nil {
 	//	return errTable
 	//}
 
 	// get pointer to table
-	table, errTable := l.BigQuery.CreateTable(client, l.BigQueryDataset, l.BigQueryTablename, nil, false)
+	table, errTable := l.BigQueryService.CreateTable(client, l.BigQueryDataset, l.BigQueryTablename, nil, false)
 	if errTable != nil {
 		return errTable
 	}
@@ -56,7 +56,7 @@ func (l *Logging) ToBigQuery() *errortools.Error {
 		b[i] = l.Logs[i]
 	}
 
-	errInsert := l.BigQuery.Insert(table, b)
+	errInsert := l.BigQueryService.Insert(table, b)
 	if errInsert != nil {
 		return errInsert
 	}
@@ -88,7 +88,7 @@ func (l *Logging) GetMaxTimestamp(operation string, filter string) (time.Time, *
 		sqlWhere += filter
 	}
 
-	t, e := l.BigQuery.GetValue(l.BigQueryDataset, l.BigQueryTablename, sqlSelect, sqlWhere)
+	t, e := l.BigQueryService.GetValue(l.BigQueryDataset, l.BigQueryTablename, sqlSelect, sqlWhere)
 	if e != nil {
 		return time.Now(), e
 	}
