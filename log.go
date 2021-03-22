@@ -37,14 +37,6 @@ func (l *Logging) ToBigQuery() *errortools.Error {
 		return errClient
 	}
 
-	//guid := types.NewGUID()
-	//tempTableName := "temp_" + strings.Replace(guid.String(), "-", "", -1)
-
-	//table, errTable := l.BigQueryService.CreateTable(client, l.BigQueryDataset, tempTableName, Log{}, false)
-	//if errTable != nil {
-	//	return errTable
-	//}
-
 	// get pointer to table
 	table, errTable := l.BigQueryService.CreateTable(client, l.BigQueryDataset, l.BigQueryTablename, nil, false)
 	if errTable != nil {
@@ -88,7 +80,14 @@ func (l *Logging) GetMaxTimestamp(operation string, filter string) (time.Time, *
 		sqlWhere += filter
 	}
 
-	t, e := l.BigQueryService.GetValue(l.BigQueryDataset, l.BigQueryTablename, sqlSelect, sqlWhere)
+	selectConfig := bigquery.SelectConfig{
+		DatasetName:     l.BigQueryDataset,
+		TableOrViewName: l.BigQueryTablename,
+		SQLSelect:       sqlSelect,
+		SQLWhere:        sqlWhere,
+	}
+
+	t, e := l.BigQueryService.GetValue(&selectConfig)
 	if e != nil {
 		return time.Now(), e
 	}
