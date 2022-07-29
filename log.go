@@ -32,13 +32,12 @@ type Log struct {
 }
 
 func (l *Logging) ToBigQuery() *errortools.Error {
-	client, errClient := l.BigQueryService.CreateClient()
-	if errClient != nil {
-		return errClient
-	}
-
 	// get pointer to table
-	table, errTable := l.BigQueryService.CreateTable(client, l.BigQueryDataset, l.BigQueryTablename, nil, false)
+	sqlConfig := bigquery.SqlConfig{
+		DatasetName:     l.BigQueryDataset,
+		TableOrViewName: &l.BigQueryTablename,
+	}
+	table, errTable := l.BigQueryService.CreateTable(&sqlConfig, nil, false)
 	if errTable != nil {
 		return errTable
 	}
@@ -80,11 +79,11 @@ func (l *Logging) GetMaxTimestamp(operation string, filter string) (time.Time, *
 		sqlWhere += filter
 	}
 
-	selectConfig := bigquery.SelectConfig{
+	selectConfig := bigquery.SqlConfig{
 		DatasetName:     l.BigQueryDataset,
-		TableOrViewName: l.BigQueryTablename,
-		SQLSelect:       sqlSelect,
-		SQLWhere:        sqlWhere,
+		TableOrViewName: &l.BigQueryTablename,
+		SqlSelect:       &sqlSelect,
+		SqlWhere:        &sqlWhere,
 	}
 
 	t, e := l.BigQueryService.GetValue(&selectConfig)
@@ -92,15 +91,18 @@ func (l *Logging) GetMaxTimestamp(operation string, filter string) (time.Time, *
 		return time.Now(), e
 	}
 
-	// if no error but no time found in table
-	if t == "" {
-		t = "1800-01-01 00:00:00"
-	}
-
 	layout := "2006-01-02 15:04:05"
-	time1, err := time.Parse(layout, t[0:len(layout)])
-	if err != nil {
-		return time.Now(), errortools.ErrorMessage(err)
+	time1, _ := time.Parse(layout, "1800-01-01 00:00:00")
+
+	// if no error but no time found in table
+	if t != nil {
+		_t := fmt.Sprintf("%v", *t)
+		_time1, err := time.Parse(layout, _t[0:len(layout)])
+		if err != nil {
+			return time.Now(), errortools.ErrorMessage(err)
+		}
+
+		time1 = _time1
 	}
 
 	return time1, nil
